@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
 
-dz = 0.01
 
 def generateWindows(a, bins):
     aPadded = np.pad(a, bins, mode="wrap")
@@ -16,13 +15,14 @@ def generateWindows(a, bins):
     return aWindows
 
 
-def c1(model, rho, c2=False):
+def c1(model, rho, dx=0.01, c2=False):
     """
-    Infer the one-body direct correlation profile c1 from a given density profile with a given neural correlation functional.
+    Infer the one-body direct correlation profile from a given density profile with a given neural correlation functional.
 
     model: The neural correlation functional
     rho: The density profile
-    c2: If False, only return c1. If True, return both c1 as well as the corresponding two-body direct correlation function c2(x, x') which is obtained via autodifferentiation. If 'unstacked', give c2 as a function of x and x-x', i.e. as obtained naturally from the model.
+    dx: The discretization of the input layer of the model
+    c2: If False, only return c1(x). If True, return both c1 as well as the corresponding two-body direct correlation function c2(x, x') which is obtained via autodifferentiation. If 'unstacked', give c2 as a function of x and x-x', i.e. as obtained naturally from the model.
     """
     inputBins = model.layers[0].input_shape[0][1]
     windowBins = (inputBins - 1) // 2
@@ -32,7 +32,7 @@ def c1(model, rho, c2=False):
         with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
             tape.watch(rhoWindows)
             result = model(rhoWindows)
-        jacobiWindows = tape.batch_jacobian(result, rhoWindows).numpy().squeeze() / dz
+        jacobiWindows = tape.batch_jacobian(result, rhoWindows).numpy().squeeze() / dx
         c1_result = result.numpy().flatten()
         if c2 == "unstacked":
             return c1_result, jacobiWindows
@@ -41,12 +41,19 @@ def c1(model, rho, c2=False):
     return model.predict_on_batch(rhoWindows).flatten()
 
 
-def Fexc(model, rho):
+def Fexc(model, rho, dx=0.01):
+    """
+    Calculate the excess free energy Fexc for a given density profile with functional line integration.
+
+    model: The neural correlation functional
+    rho: The density profile
+    dx: The discretization of the input layer of the model
+    """
     alphas = np.linspace(0, 1, 30)
-    integrandMap = {}
-    for alpha in alphas:
-        integrandMap[alpha] = np.sum(rho * c1(model, alpha * rho)) * dz
-    Fexc = -simps(list(integrandMap.values()), list(integrandMap.keys()))
+    integrands = np.empty_like(alphas)
+    for i, alpha in enumerate(alphas):
+        integrands[i] = np.sum(rho * c1(model, alpha * rho)) * dx
+    Fexc = -simps(integrands, alphas)
     return Fexc
 
 
