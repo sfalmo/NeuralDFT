@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8380004.svg)](https://doi.org/10.5281/zenodo.8380004)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8380003.svg)](https://doi.org/10.5281/zenodo.8380003)
 
 
 # Neural functional theory for inhomogeneous fluids: Fundamentals and applications
