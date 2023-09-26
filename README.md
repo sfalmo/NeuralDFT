@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8380004.svg)](https://doi.org/10.5281/zenodo.8380004)
+
+
 # Neural functional theory for inhomogeneous fluids: Fundamentals and applications
 
 This repository contains code, datasets and models corresponding to the following publication:
