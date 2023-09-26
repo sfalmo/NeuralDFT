@@ -78,7 +78,7 @@ def do_all_test():
     """
     Determine the self-consistent density profiles with neural DFT for all test systems.
     """
-    model = keras.models.load_model("models/HS")
+    model = keras.models.load_model("models/HS.keras")
     simData = np.load("data/HS.npy", allow_pickle=True).item()
     for key, profiles in simData["test"].items():
         print(f"Doing {key}")
@@ -90,7 +90,7 @@ def do_sedimentation():
     """
     Calculate the density profile with neural DFT for a large sedimentation column with slowly varying local chemical potential.
     """
-    model = keras.models.load_model("models/HS")
+    model = keras.models.load_model("models/HS.keras")
     zs = np.arange(-1, 1001, 0.01)
     profiles = np.empty(len(zs), dtype=[("z", "f8"), ("muloc", "f8")])
     profiles["z"] = zs
