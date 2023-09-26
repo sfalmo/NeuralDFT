@@ -19,5 +19,5 @@ Some useful utilities are provided in `utils.py`, such as tools for functional c
 
 ### Further information
 
-The reference data has been generated with grand canonical Monte Carlo simulations using (MBD)[https://gitlab.uni-bayreuth.de/bt306964/mbd].
-The analytic DFT calculations with fundamental measure theory have been performed with the Julia library (ClassicalDFT.jl)[https://gitlab.uni-bayreuth.de/bt306964/ClassicalDFT.jl].
+The reference data has been generated with grand canonical Monte Carlo simulations using [MBD](https://gitlab.uni-bayreuth.de/bt306964/mbd).
+The analytic DFT calculations with fundamental measure theory have been performed with the Julia library [ClassicalDFT.jl](https://gitlab.uni-bayreuth.de/bt306964/ClassicalDFT.jl).
