@@ -1,10 +1,10 @@
 import itertools
 import numpy as np
 from numpy.lib.recfunctions import structured_to_unstructured
-from scipy.integrate import simps
+from scipy.integrate import simpson
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from tensorflow import keras
+import keras
 
 
 def generateWindows(a, bins):
@@ -24,7 +24,7 @@ def c1(model, rho, dx=0.01, c2=False):
     dx: The discretization of the input layer of the model
     c2: If False, only return c1(x). If True, return both c1 as well as the corresponding two-body direct correlation function c2(x, x') which is obtained via autodifferentiation. If 'unstacked', give c2 as a function of x and x-x', i.e. as obtained naturally from the model.
     """
-    inputBins = model.layers[0].input_shape[0][1]
+    inputBins = model.input.shape[1]
     windowBins = (inputBins - 1) // 2
     rhoWindows = generateWindows(rho, windowBins).reshape(rho.shape[0], inputBins, 1)
     if c2:
@@ -53,7 +53,7 @@ def Fexc(model, rho, dx=0.01):
     integrands = np.empty_like(alphas)
     for i, alpha in enumerate(alphas):
         integrands[i] = np.sum(rho * c1(model, alpha * rho)) * dx
-    Fexc = -simps(integrands, alphas)
+    Fexc = -simpson(integrands, alphas)
     return Fexc
 
 
@@ -113,8 +113,8 @@ class BulkCorrelationEvaluator:
         self.model = model
         self.dx = dx
         self.rhob = rhob
-        self.inputBins = self.model.layers[0].input_shape[0][1]
-        self.channels = self.model.layers[0].input_shape[0][2]
+        self.inputBins = self.model.input.shape[1]
+        self.channels = self.model.input.shape[2]
         rhobWindow = np.full(self.inputBins, self.rhob)
         inputBinsHalf = self.inputBins // 2
         self.xWindow = self.dx * np.linspace(-inputBinsHalf, inputBinsHalf, self.inputBins)

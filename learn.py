@@ -51,6 +51,6 @@ fitHistory = model.fit(
     epochs=100,
     callbacks=[
         keras.callbacks.LearningRateScheduler(lrschedule),
-        keras.callbacks.ModelCheckpoint(filepath="models/currentBest", monitor="val_mean_absolute_error", save_best_only=True),
+        keras.callbacks.ModelCheckpoint(filepath="models/currentBest.keras", monitor="val_mean_absolute_error", save_best_only=True),
     ]
 )
